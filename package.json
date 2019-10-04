@@ -1,0 +1,34 @@
+{
+  "name": "weichspieleditor",
+  "version": "0.1.0",
+  "description": "Electron frontend for the fernspielapparat runtime",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "lint": "eslint --ext .js,.vue assets/javascript main.js preload.js renderer.js",
+    "fix": "eslint --fix --ext .js,.vue assets/javascript main.js preload.js renderer.js"
+  },
+  "repository": "https://github.com/krachzack/weichspielapparat",
+  "keywords": [
+    "fernspielapparat",
+    "runtime",
+    "client",
+    "GUI",
+    "input",
+    "server"
+  ],
+  "author": "krachzack <hello@phstadler.com>",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "electron": "^6.0.10",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-html": "^5.0.3",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^9.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^5.2.2",
+    "targz": "^1.0.1"
+  }
+}
