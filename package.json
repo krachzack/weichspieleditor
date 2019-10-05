@@ -4,10 +4,11 @@
   "description": "Electron frontend for the fernspielapparat runtime",
   "main": "src/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
     "lint": "eslint --ext .js,.vue src forge.config.js",
-    "fix": "eslint --fix --ext .js,.vue src forge.config.js",
-    "build": "electron-forge make"
+    "fix": "eslint --fix --ext .js,.vue src forge.config.js"
   },
   "repository": "https://github.com/krachzack/weichspielapparat",
   "keywords": [
@@ -20,8 +21,15 @@
   ],
   "author": "krachzack <hello@phstadler.com>",
   "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "electron-compile": "^6.4.4",
+    "targz": "^1.0.1"
+  },
   "devDependencies": {
+    "@electron-forge/maker-zip": "^6.0.0-beta.45",
     "electron": "^6.0.10",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "3.0.13",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-html": "^5.0.3",
@@ -29,7 +37,9 @@
     "eslint-plugin-node": "^9.0.1",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-vue": "^5.2.2",
-    "targz": "^1.0.1"
+    "eslint-plugin-vue": "^5.2.2"
+  },
+  "config": {
+    "forge": "./forge.config.js"
   }
 }
