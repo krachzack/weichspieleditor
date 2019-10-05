@@ -6,6 +6,17 @@ import { downloadTarball } from './github.js'
 import os from 'os'
 import { delimiter } from 'path'
 import { decompress } from 'targz'
+import waitPort from 'wait-port'
+
+/**
+ * Hostname for websockets URL. Not used for binding,
+ * which is always to `0.0.0.0:38397`.
+ */
+const defaultBind = {
+  host: '127.0.0.1',
+  port: 38397
+}
+const wsUrl = `ws://${defaultBind.host}:${defaultBind.port}`
 
 const userDir = getUserDir()
 
@@ -116,25 +127,26 @@ function launchServer (pathToBinary) {
       reject(new Error(`fernspielapparat could not be started, error: ${err.message}`))
     })
 
-    // TODO maybe resolve when reading
-    //    DEBUG [2019-10-01 19:19:14.823 +0200] - initialization complete, starting at src/main.rs:154
-    // or
-    //    DEBUG [2019-10-01 19:19:14.716 +0200] - starting WebSockets remote control server on 0.0.0.0:38397 at src/main.rs:205
-    // which sounds brittle, so maybe keep the timeout even then
-
-    setTimeout(
-      () => {
-        if (starting) {
-          // if not already exited with an error, startup is successful
-          starting = false
-          resolve({
-            process: server,
-            url: 'ws://127.0.0.1:38397'
-          })
-        } // if exited already, starting is false and we are done
+    waitPort(
+      {
+        ...defaultBind,
+        // wait 150ms before each connection attempt
+        timeout: 150
       },
-      startupSuccessfulThreshold
+      5000 // wait max 5sec for successful server startup
+    ).then(
+      () => done(),
+      () => reject(new Error(
+        `fernspielapparat server not available on port ${defaultBind.port} after 5 seconds, giving up.`
+      ))
     )
+
+    function done () {
+      resolve({
+        process: server,
+        url: wsUrl
+      })
+    }
   })
 }
 
