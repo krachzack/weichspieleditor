@@ -1,5 +1,4 @@
 module.exports = {
-  packagerConfig: {},
   make_targets: {
     win32: ['zip'],
     darwin: ['zip', 'dmg'],
