@@ -12,11 +12,12 @@ const protocol = 'fernspielctl'
 
 /**
  * @typedef Connection
- * @property {string} url - Websockets URL, e.g. `ws://127.0.0.1:38397
+ * @property {string} url - Websockets URL, e.g. `ws://127.0.0.1:38397`
  * @property {function} onTransition - callback on transitions between two states
  * @property {function} onStart - callback after initial state of new phonebook entered
  * @property {function} onClose - callback after successful closing of the connection
  * @property {function} close - call this parameterless function to close the connection
+ * @property {function} dial - dials a given string of symbols like `"1 h 123"`
  */
 
 /**
@@ -44,6 +45,12 @@ export default function connect(opts) {
       close () {
         socket.close()
         socket = undefined
+      },
+      dial (symbols) {
+        socket.send(JSON.stringify({
+          invoke: 'dial',
+          with: symbols
+        }))
       }
     }
     Object.freeze(connection)

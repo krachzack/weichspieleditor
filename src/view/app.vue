@@ -45,6 +45,11 @@ export default {
         throw new Error('inconsistent state')
       }
     }
+  },
+  methods: {
+    dial (symbols) {
+      this.connection.dial(symbols)
+    }
   }
 }
 </script>
@@ -73,6 +78,31 @@ export default {
         </header>
         <main class="main-content">
           <p>Server running on {{connection.url}}, all systems ready.</p>
+
+          <article class="dial">
+            <div class="dial-row">
+              <button class="dial-button is-numeric" v-on:click="dial('1')">1</button>
+              <button class="dial-button is-numeric" v-on:click="dial('2')">2</button>
+              <button class="dial-button is-numeric" v-on:click="dial('3')">3</button>
+            </div>
+            <div class="dial-row">
+              <button class="dial-button is-numeric" v-on:click="dial('4')">4</button>
+              <button class="dial-button is-numeric" v-on:click="dial('5')">5</button>
+              <button class="dial-button is-numeric" v-on:click="dial('6')">6</button>
+            </div>
+            <div class="dial-row">
+              <button class="dial-button is-numeric" v-on:click="dial('7')">7</button>
+              <button class="dial-button is-numeric" v-on:click="dial('8')">8</button>
+              <button class="dial-button is-numeric" v-on:click="dial('9')">9</button>
+            </div>
+            <div class="dial-row">
+              <button class="dial-button is-numeric" v-on:click="dial('0')">0</button>
+            </div>
+            <div class="dial-row">
+              <button class="dial-button is-receiver is-pick-up" v-on:click="dial('p')">Pick up</button>
+              <button class="dial-button is-receiver is-hang-up" v-on:click="dial('h')">Hang up</button>
+            </div>
+          </article>
         </main>
       </div>
     </transition>
@@ -137,5 +167,48 @@ export default {
   padding: 1em 2em;
   background-color: white;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.dial-row {
+  text-align: center;
+}
+
+.dial-button {
+  background-color: #333;
+  border: 0.3em solid white;
+  color: white;
+  font-size: 1.8em;
+  transition: background-color 0.1s ease;
+  user-select: none;
+}
+
+.dial-button:active {
+  background-color: rgb(97, 97, 97);
+}
+
+.dial-button.is-numeric {
+  border-radius: 100%;
+  width: 2.4em;
+  height: 2.4em;
+}
+
+.dial-button.is-receiver {
+  padding: 0.2em 0.6em;
+}
+
+.dial-button.is-pick-up {
+  background-color: #115311;
+}
+
+.dial-button.is-pick-up:active {
+  background-color: #177717; 
+}
+
+.dial-button.is-hang-up {
+  background-color: #631818;
+}
+
+.dial-button.is-hang-up:active {
+  background-color: #a52020;
 }
 </style>
