@@ -1,7 +1,5 @@
-// Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
-const path = require('path')
-const launchRuntime = require('./server/runtime.js')
+import { app, BrowserWindow } from 'electron'
+import launchRuntime from './server/runtime.js'
 
 let mainWindow
 
@@ -10,11 +8,11 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'view/main/preload.js')
+      nodeIntegration: true
     }
   })
 
-  mainWindow.loadFile('src/view/main/index.html')
+  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
   mainWindow.webContents.on('did-finish-load', () => {
     console.log('launching runtime...')

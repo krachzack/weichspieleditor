@@ -1,8 +1,9 @@
 {
-  "name": "weichspieleditor",
+  "name": "weichspielapparat",
+  "productName": "weichspielapparat",
   "version": "0.8.0",
   "description": "Electron frontend for the fernspielapparat runtime",
-  "main": "src/main.js",
+  "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -22,14 +23,17 @@
   "author": "krachzack <hello@phstadler.com>",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "electron-compile": "^6.4.4",
+    "electron-squirrel-startup": "^1.0.0",
     "targz": "^1.0.1"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.45",
     "@electron-forge/maker-zip": "^6.0.0-beta.45",
-    "electron": "^6.0.10",
-    "electron-forge": "^5.2.4",
-    "electron-prebuilt-compile": "3.0.13",
+    "@electron-forge/plugin-webpack": "^6.0.0-beta.45",
+    "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "css-loader": "^3.2.0",
+    "electron": "^6.0.11",
+    "electron-rebuild": "^1.8.6",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-html": "^5.0.3",
@@ -37,7 +41,11 @@
     "eslint-plugin-node": "^9.0.1",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-vue": "^5.2.2"
+    "eslint-plugin-vue": "^5.2.2",
+    "node-loader": "^0.6.0",
+    "style-loader": "^1.0.0",
+    "vue-loader": "^15.7.1",
+    "webpack": "^4.41.0"
   },
   "config": {
     "forge": "./forge.config.js"

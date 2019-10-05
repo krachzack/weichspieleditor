@@ -1,4 +1,5 @@
 module.exports = {
+  packagerConfig: {},
   make_targets: {
     win32: ['zip'],
     darwin: ['zip', 'dmg'],
@@ -15,5 +16,23 @@ module.exports = {
       platforms: [],
       name: '@electron-forge/maker-deb'
     }
+  ],
+  plugins: [
+    [
+      '@electron-forge/plugin-webpack',
+      {
+        mainConfig: './webpack.main.config.js',
+        renderer: {
+          config: './webpack.renderer.config.js',
+          entryPoints: [
+            {
+              html: './src/view/main/index.html',
+              js: './src/view/main/renderer.js',
+              name: 'main_window'
+            }
+          ]
+        }
+      }
+    ]
   ]
 }
