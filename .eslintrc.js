@@ -12,7 +12,8 @@ module.exports = {
       "SharedArrayBuffer": "readonly",
       "test": "readonly",
       "expect": "readonly",
-      "describe": "readonly"
+      "describe": "readonly",
+      "MAIN_WINDOW_WEBPACK_ENTRY": "readonly"
   },
   "parserOptions": {
       "ecmaVersion": 2018,
