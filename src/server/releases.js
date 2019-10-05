@@ -1,5 +1,5 @@
-const { getGithubJson } = require('./github.js')
-const os = require('os')
+import { getGithubJson } from './github.js'
+import os from 'os'
 
 const repo = 'krachzack/fernspielapparat'
 const releaseApiUrl = `/repos/${repo}/releases`
@@ -14,15 +14,13 @@ const platformIndicatorsInTar = {
   linux: /.*linux.*\.tar\.gz/i
 }
 
-module.exports = { releaseTarballUrl }
-
 /**
  * Finds the most recent release of the fernspielapparat runtime on GitHub
  * through the GitHub API.
  *
  * @returns {Promise<string>} URL to a `.tar.gz` with the fernspielapparat runtime
  */
-function releaseTarballUrl () {
+export function releaseTarballUrl () {
   if (os.arch() !== 'x64') {
     return Promise.reject(
       new Error(`Architecture ${os.arch()} is not supported by the fernspielapparat runtime`)

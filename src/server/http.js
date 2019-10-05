@@ -1,9 +1,7 @@
-const https = require('https')
-const fs = require('fs')
+import https from 'https'
+import fs from 'fs'
 
-module.exports = { getJson, download }
-
-function getJson ({ hostname, path, headers }) {
+export function getJson ({ hostname, path, headers }) {
   if (!headers) {
     headers = {}
   }
@@ -59,7 +57,7 @@ function getUtf8 ({ hostname, path, headers }) {
   })
 }
 
-function download ({ url, hostname, path, headers }, toFile) {
+export function download ({ url, hostname, path, headers }, toFile) {
   return new Promise((resolve, reject) => {
     if (url) {
       const parsed = new URL(url)
@@ -113,34 +111,3 @@ function download ({ url, hostname, path, headers }, toFile) {
     }).end()
   })
 }
-
-/* function requestRedirectLocation (url) {
-  return new Promise((resolve, reject) => {
-    const { hostname, pathname: path } = new URL(url)
-    https.request(
-      {
-        hostname,
-        path,
-        method: 'HEAD',
-        headers: {
-          'User-Agent': 'Krachzack-Weichspielapparat'
-        }
-      },
-      (res) => {
-        const location = res.headers.location || res.headers.Location
-        if (location) {
-          resolve(location)
-        } else {
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            // No redirect, return the resolve with original URL
-            resolve(url)
-          } else {
-            reject(new Error(`Not a redirect and not successful, status: ${res.statusCode}`))
-          }
-        }
-      }
-    ).on('error', ({ message }) => {
-      reject(new Error(`HTTP request failed: ${message}`))
-    }).end()
-  })
-} */

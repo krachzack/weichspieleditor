@@ -1,13 +1,11 @@
-const { app } = require('electron')
-const fs = require('fs')
-const { spawn } = require('child_process')
-const { releaseTarballUrl } = require('./releases.js')
-const { downloadTarball } = require('./github.js')
-const os = require('os')
-const pathDelimiter = require('path').delimiter
-const { decompress } = require('targz')
-
-module.exports = launchRuntime
+import { app } from 'electron'
+import fs from 'fs'
+import { spawn } from 'child_process'
+import { releaseTarballUrl } from './releases.js'
+import { downloadTarball } from './github.js'
+import os from 'os'
+import { delimiter } from 'path'
+import { decompress } from 'targz'
 
 const userDir = getUserDir()
 
@@ -20,7 +18,7 @@ const startupSuccessfulThreshold = 1000
 /**
  * Describes a fernspielapparat runtime running in a child process,
  * with a server bound to a returned URL.
- * 
+ *
  * @typedef Runtime
  * @property {import('child_process').ChildProcess} process - Child process running a server-enabled runtime
  * @property {string} url - URL to the running WebSocket server for remote control
@@ -37,7 +35,7 @@ const startupSuccessfulThreshold = 1000
  *
  * @returns {Promise<Runtime>} promise for runtime process
  */
-function launchRuntime () {
+export default function launchRuntime () {
   return getBinary()
     .catch(downloadBinary)
     .then(launchServer)
@@ -68,15 +66,15 @@ function getBinary () {
 /**
  * Tries to start a child process running the fernspielapparat runtime
  * and resolves to a running child process instance.
- * 
+ *
  * If no path is specified or if the path is `"fernspielapparat"`, then
  * the runtime on the path is used.
- * 
+ *
  * If an absolute path to a runtime executable is specified this one is
  * used.
- * 
+ *
  * The runtime is bound to `0.0.0.0:38397`, which is the default configuration.
- * 
+ *
  * @param {string} pathToBinary Either an absolute path to a binary or `'fernspielapparat'` to use the PATH
  * @returns {Promise<Runtime} promise for running child process with a specified ws URL
  */
@@ -93,7 +91,7 @@ function launchServer (pathToBinary) {
       pathToBinary,
       [
         '-vv', // print debug and info logs on stderr, not only warnings and errors
-        '-s', // start in server mode
+        '-s' // start in server mode
       ],
       {
         env
@@ -287,7 +285,7 @@ function envForPlatform () {
     if (!env.DYLD_LIBRARY_PATH) {
       env.DYLD_LIBRARY_PATH = vlcPath
     } else {
-      env.DYLD_LIBRARY_PATH = `${env.DYLD_LIBRARY_PATH}${pathDelimiter}${vlcPath}`
+      env.DYLD_LIBRARY_PATH = `${env.DYLD_LIBRARY_PATH}${delimiter}${vlcPath}`
     }
 
     if (!env.VLC_PLUGIN_PATH) {

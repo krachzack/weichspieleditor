@@ -26,7 +26,7 @@ function waitForServerStart () {
 }
 
 function waitForDomReady () {
-  return new Promise((resolve, _reject) => {
+  return new Promise(resolve => {
     window.addEventListener('load', () => {
       resolve()
     })
