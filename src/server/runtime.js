@@ -6,7 +6,6 @@ const { downloadTarball } = require('./github.js')
 const os = require('os')
 const pathDelimiter = require('path').delimiter
 const { decompress } = require('targz')
-const { randomBetween } = require('./rand.js')
 
 module.exports = launchRuntime
 
@@ -19,15 +18,24 @@ const userDir = getUserDir()
 const startupSuccessfulThreshold = 1000
 
 /**
+ * Describes a fernspielapparat runtime running in a child process,
+ * with a server bound to a returned URL.
+ * 
+ * @typedef Runtime
+ * @property {import('child_process').ChildProcess} process - Child process running a server-enabled runtime
+ * @property {string} url - URL to the running WebSocket server for remote control
+ */
+
+/**
  * Spawns a process for the fernspielapparat runtime.
  *
  * The executable is searched for in this applications user dir.
  * If it is not found, a recent version is downloaded from GitHub.
  *
- * Returns an object holding the `port` the server runs on and
- * a `process` that can be used to shut it down.
+ * Returns a promise for a runtime child process in server mode,
+ * bound to `0.0.0.0:38397`, which is the default configuration.
  *
- * @returns {Promise<Object>} promise for object with properties `port` and `process`
+ * @returns {Promise<Runtime>} promise for runtime process
  */
 function launchRuntime () {
   return getBinary()
@@ -57,10 +65,28 @@ function getBinary () {
   }
 }
 
+/**
+ * Tries to start a child process running the fernspielapparat runtime
+ * and resolves to a running child process instance.
+ * 
+ * If no path is specified or if the path is `"fernspielapparat"`, then
+ * the runtime on the path is used.
+ * 
+ * If an absolute path to a runtime executable is specified this one is
+ * used.
+ * 
+ * The runtime is bound to `0.0.0.0:38397`, which is the default configuration.
+ * 
+ * @param {string} pathToBinary Either an absolute path to a binary or `'fernspielapparat'` to use the PATH
+ * @returns {Promise<Runtime} promise for running child process with a specified ws URL
+ */
 function launchServer (pathToBinary) {
+  if (!pathToBinary) {
+    pathToBinary = 'fernspielapparat'
+  }
+
   return new Promise((resolve, reject) => {
     let starting = true
-    const port = randomBetween(40000, 65000)
     const env = envForPlatform()
 
     const server = spawn(
@@ -68,7 +94,6 @@ function launchServer (pathToBinary) {
       [
         '-vv', // print debug and info logs on stderr, not only warnings and errors
         '-s', // start in server mode
-        '-p', port // on a random port
       ],
       {
         env
@@ -105,8 +130,8 @@ function launchServer (pathToBinary) {
           // if not already exited with an error, startup is successful
           starting = false
           resolve({
-            process,
-            port
+            process: server,
+            url: 'ws://127.0.0.1:38397'
           })
         } // if exited already, starting is false and we are done
       },

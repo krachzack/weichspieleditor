@@ -2,9 +2,9 @@ import { ipcRenderer } from 'electron'
 
 Promise.all([waitForServerStart(), waitForDomReady()])
   .then(
-    ([port]) => {
+    ([url]) => {
       document.getElementById('server-message')
-        .textContent = `Server running on port ${port}.`
+        .textContent = `Server running on ${url}.`
     }
   )
 
@@ -12,8 +12,8 @@ function waitForServerStart () {
   return new Promise((resolve, reject) => {
     ipcRenderer.once(
       'fernspielapparatReady',
-      (_evt, port) => {
-        resolve(port)
+      (_evt, url) => {
+        resolve(url)
       }
     )
     ipcRenderer.once(

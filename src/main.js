@@ -4,6 +4,11 @@ import launchRuntime from './server/runtime.js'
 let mainWindow
 
 function createWindow () {
+  /**
+   * @type {import('child_process').ChildProcess} child process set when window contents first loaded
+   */
+  let runtimeProcess
+
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -14,12 +19,13 @@ function createWindow () {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
-  mainWindow.webContents.on('did-finish-load', () => {
+  mainWindow.webContents.once('did-finish-load', () => {
     console.log('launching runtime...')
     launchRuntime().then(
-      ({ port }) => {
-        console.log(`runtime is up and running on port ${port}`)
-        mainWindow.webContents.send('fernspielapparatReady', port)
+      ({ process, url }) => {
+        runtimeProcess = process
+        console.log(`runtime is up and running on 0.0.0.0:38397`)
+        mainWindow.webContents.send('fernspielapparatReady', url)
       },
       err => mainWindow.webContents.send('fernspielapparatError', err)
     )
@@ -28,6 +34,10 @@ function createWindow () {
   mainWindow.on('closed', function () {
     // Free the window
     mainWindow = null
+
+    if (runtimeProcess) {
+      runtimeProcess.kill()
+    }
   })
 }
 
