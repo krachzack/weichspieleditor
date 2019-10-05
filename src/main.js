@@ -12,6 +12,8 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    // same color as loading overlay, so we don't see white flashing at startup
+    backgroundColor: '#444444',
     webPreferences: {
       nodeIntegration: true
     }
