@@ -10,11 +10,11 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'view/main/preload.js')
     }
   })
 
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('src/view/main/index.html')
 
   mainWindow.webContents.on('did-finish-load', () => {
     console.log('launching runtime...')

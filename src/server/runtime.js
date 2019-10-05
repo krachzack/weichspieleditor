@@ -250,9 +250,10 @@ function getUserDir () {
 }
 
 function envForPlatform () {
-  const env = {
-    ...process.env
-  }
+  const env = Object.assign(
+    {},
+    process.env
+  )
 
   const platform = os.platform()
   if (platform === 'darwin' && !env.DYLD_LIBRARY_PATH && !env.VLC_PLUGIN_DIR) {

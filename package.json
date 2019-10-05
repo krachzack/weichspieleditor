@@ -2,11 +2,12 @@
   "name": "weichspieleditor",
   "version": "0.8.0",
   "description": "Electron frontend for the fernspielapparat runtime",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "lint": "eslint --ext .js,.vue assets/javascript main.js preload.js renderer.js",
-    "fix": "eslint --fix --ext .js,.vue assets/javascript main.js preload.js renderer.js"
+    "lint": "eslint --ext .js,.vue src forge.config.js",
+    "fix": "eslint --fix --ext .js,.vue src forge.config.js",
+    "build": "electron-forge make"
   },
   "repository": "https://github.com/krachzack/weichspielapparat",
   "keywords": [
