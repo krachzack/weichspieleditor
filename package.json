@@ -1,7 +1,7 @@
 {
   "name": "weichspielapparat",
   "productName": "weichspielapparat",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "Electron frontend for the fernspielapparat runtime",
   "main": ".webpack/main",
   "scripts": {
@@ -46,7 +46,8 @@
     "style-loader": "^1.0.0",
     "vue-loader": "^15.7.1",
     "wait-port": "^0.2.4",
-    "webpack": "^4.41.0"
+    "webpack": "^4.41.0",
+    "yaml": "^1.7.0"
   },
   "config": {
     "forge": "./forge.config.js"
