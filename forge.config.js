@@ -9,11 +9,6 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-zip'
-    },
-    {
-      // do not even run on linux, otherwise it tries to build d
-      platforms: [],
-      name: '@electron-forge/maker-deb'
     }
   ],
   plugins: [
