@@ -51,6 +51,12 @@ export default function connect(opts) {
           invoke: 'dial',
           with: symbols
         }))
+      },
+      run (phonebook) {
+        socket.send(JSON.stringify({
+          invoke: 'run',
+          with: phonebook
+        }))
       }
     }
     Object.freeze(connection)

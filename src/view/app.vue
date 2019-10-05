@@ -1,13 +1,15 @@
 <script>
 import connect from './connect'
 import serverStartup from '../server/startup.js'
+import { load } from './phonebook.js'
 
 export default {
   data () {
     return {
       url: '',
       connection: null,
-      connectError: null
+      connectError: null,
+      uploadError: ''
     }
   },
   created () {
@@ -49,6 +51,24 @@ export default {
   methods: {
     dial (symbols) {
       this.connection.dial(symbols)
+    },
+    load (evt) {
+      const { files } = evt.target
+
+      if (files.length >= 1) {
+        const file = files[0]
+        console.log('Loading', file)
+
+        load(file)
+          .then(phonebook => this.connection.run(phonebook))
+          .catch(err => {
+            this.uploadError = `Failed to run phonebook: ${err.message}`
+            setTimeout(
+              () => this.uploadError = '',
+              5000 // hide error again after five seconds
+            )
+          })
+      }
     }
   }
 }
@@ -77,7 +97,7 @@ export default {
           weichspielapparat
         </header>
         <main class="main-content">
-          <p>Server running on {{connection.url}}, all systems ready.</p>
+          <p>fernspielapparat running on {{connection.url}}, all systems ready.</p>
 
           <article class="dial">
             <div class="dial-row">
@@ -104,6 +124,19 @@ export default {
             </div>
           </article>
         </main>
+        <footer class="bottom-controls">
+          <article class="set-phonebook">
+            <label class="set-phonebook-upload">
+              Set phonebook
+              <input type="file" v-on:change="load">
+            </label>
+            <div class="set-phonebook-error" v-if="uploadError">
+              <div class="set-phonebook-error-msg">
+                {{uploadError}}
+              </div>
+            </div>
+          </article>
+        </footer>
       </div>
     </transition>
   </section>
@@ -164,9 +197,21 @@ export default {
 
 .main-content {
   flex-grow: 1000;
-  padding: 1em 2em;
   background-color: white;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.bottom-controls {
+  flex-grow: 150;
+  flex-basis: 4em;
+  background-color: #CCC;
+  color: #333;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  position: relative;
+}
+
+p {
+  padding: 1em 2em;
 }
 
 .dial-row {
@@ -210,5 +255,23 @@ export default {
 
 .dial-button.is-hang-up:active {
   background-color: #a52020;
+}
+
+.set-phonebook-upload {
+  display: block;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin-top: -0.1em;
+  transform: translateY(-50%);
+}
+
+.set-phonebook-upload input {
+  border: 0.1em solid rgb(187, 187, 187);
+  margin-left: 0.3em;
+  padding: 0.3em;
 }
 </style>
