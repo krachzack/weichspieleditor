@@ -10,7 +10,8 @@ export default new Promise((resolve, reject) => {
   ipcRenderer.once(
     'fernspielapparatError',
     (_evt, err) => {
-      reject(err)
+      const msg = err.message || err
+      reject(new Error(`Server startup failed: ${msg}`))
     }
   )
 })

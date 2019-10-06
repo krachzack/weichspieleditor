@@ -28,7 +28,11 @@ export function load (file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => resolve(reader.result)
-        reader.onerror = reject
+        reader.onerror = err => {
+          reject(new Error(
+            `File reading error: ${err}`
+          ))
+        }
         reader.readAsText(file)
       })
     }

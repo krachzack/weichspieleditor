@@ -29,7 +29,10 @@ function createWindow () {
         console.log(`runtime is up and running on 0.0.0.0:38397`)
         mainWindow.webContents.send('fernspielapparatReady', url)
       },
-      err => mainWindow.webContents.send('fernspielapparatError', err)
+      err => {
+        console.error('runtime startup failure', err)
+        mainWindow.webContents.send('fernspielapparatError', err)
+      }
     )
   })
 

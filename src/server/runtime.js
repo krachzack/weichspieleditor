@@ -259,7 +259,8 @@ function extractExecutableToUserDir (tarPath) {
       }
     }, (err) => {
       if (err) {
-        reject(new Error(err))
+        const msg = err.message || err
+        reject(new Error(`Failed to decompress release, error: ${msg}.`))
       } else if (!binary) {
         reject(new Error('Could not find executable in tarball'))
       } else {

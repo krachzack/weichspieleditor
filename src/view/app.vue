@@ -27,7 +27,7 @@ export default {
       },
       err => {
         let connection = this.url ? `Connection to ${this.url}` : 'Connection'
-        connectError = `${connection} could not be established. Error: ${err.message}`
+        this.connectError = `${connection} could not be established. Error: ${err.message}`
         console.error(err)
       }
     )
