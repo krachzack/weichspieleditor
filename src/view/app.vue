@@ -12,26 +12,6 @@ export default {
       uploadError: ''
     }
   },
-  created () {
-    serverStartup.then(url => {
-      this.url = url
-      return connect({
-        url,
-        onStart ({ id }) { console.log(`starting phonebook at initial state ${id}`) },
-        onTransition ({ from, to }) { console.log(`transitioning from ${from} to ${to}`) },
-        onClose() { console.log('disconnected') }
-      })
-    }).then(
-      connection => {
-        this.connection = connection
-      },
-      err => {
-        let connection = this.url ? `Connection to ${this.url}` : 'Connection'
-        this.connectError = `${connection} could not be established. Error: ${err.message}`
-        console.error(err)
-      }
-    )
-  },
   computed: {
     phase () {
       if (this.url === '') {
@@ -47,6 +27,26 @@ export default {
         throw new Error('inconsistent state')
       }
     }
+  },
+  created () {
+    serverStartup.then(url => {
+      this.url = url
+      return connect({
+        url,
+        onStart ({ id }) { console.log(`starting phonebook at initial state ${id}`) },
+        onTransition ({ from, to }) { console.log(`transitioning from ${from} to ${to}`) },
+        onClose () { console.log('disconnected') }
+      })
+    }).then(
+      connection => {
+        this.connection = connection
+      },
+      err => {
+        let connection = this.url ? `Connection to ${this.url}` : 'Connection'
+        this.connectError = `${connection} could not be established. Error: ${err.message}`
+        console.error(err)
+      }
+    )
   },
   methods: {
     dial (symbols) {
@@ -65,7 +65,9 @@ export default {
           .catch(err => {
             this.uploadError = `Failed to run phonebook: ${err.message}`
             setTimeout(
-              () => this.uploadError = '',
+              () => {
+                this.uploadError = ''
+              },
               5000 // hide error again after five seconds
             )
           })
@@ -83,53 +85,124 @@ export default {
 <template>
   <section class="main-content-outer-wrapper">
     <transition name="fade-out">
-      <div class="overlay-load" v-if="phase != 'connected'">
+      <div
+        v-if="phase != 'connected'"
+        class="overlay-load"
+      >
         <header v-if="phase == 'waiting'">
           <p>weichspielapparat is getting ready...</p>
           <p>Some Software needs to be downloaded on the first run.</p>
           <p>Hang on tight, this will not take long.</p>
         </header>
         <header v-if="phase == 'connecting'">
-          <p>Almost done, connecting to {{url}}.</p>
+          <p>Almost done, connecting to {{ url }}.</p>
         </header>
         <header v-if="phase == 'failure'">
-          <p>Fatal error when trying to connect to server: {{connectError}}.</p>
+          <p>Fatal error when trying to connect to server: {{ connectError }}.</p>
         </header>
       </div>
     </transition>
     <transition name="fade-out">
-      <div class="main-content-wrapper" v-if="phase == 'connected'">
+      <div
+        v-if="phase == 'connected'"
+        class="main-content-wrapper"
+      >
         <header class="header-bar">
           weichspielapparat
         </header>
         <main class="main-content">
-          <p>fernspielapparat running on {{connection.url}}, all systems ready.</p>
+          <p>fernspielapparat running on {{ connection.url }}, all systems ready.</p>
 
           <article class="dial">
             <div class="dial-row">
-              <button class="dial-button is-numeric" v-on:click="dial('1')">1</button>
-              <button class="dial-button is-numeric" v-on:click="dial('2')">2</button>
-              <button class="dial-button is-numeric" v-on:click="dial('3')">3</button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('1')"
+              >
+                1
+              </button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('2')"
+              >
+                2
+              </button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('3')"
+              >
+                3
+              </button>
             </div>
             <div class="dial-row">
-              <button class="dial-button is-numeric" v-on:click="dial('4')">4</button>
-              <button class="dial-button is-numeric" v-on:click="dial('5')">5</button>
-              <button class="dial-button is-numeric" v-on:click="dial('6')">6</button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('4')"
+              >
+                4
+              </button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('5')"
+              >
+                5
+              </button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('6')"
+              >
+                6
+              </button>
             </div>
             <div class="dial-row">
-              <button class="dial-button is-numeric" v-on:click="dial('7')">7</button>
-              <button class="dial-button is-numeric" v-on:click="dial('8')">8</button>
-              <button class="dial-button is-numeric" v-on:click="dial('9')">9</button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('7')"
+              >
+                7
+              </button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('8')"
+              >
+                8
+              </button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('9')"
+              >
+                9
+              </button>
             </div>
             <div class="dial-row">
-              <button class="dial-button is-numeric" v-on:click="dial('0')">0</button>
+              <button
+                class="dial-button is-numeric"
+                @click="dial('0')"
+              >
+                0
+              </button>
             </div>
             <div class="dial-row">
-              <button class="dial-button is-receiver is-pick-up" v-on:click="dial('p')">Pick up</button>
-              <button class="dial-button is-receiver is-hang-up" v-on:click="dial('h')">Hang up</button>
+              <button
+                class="dial-button is-receiver is-pick-up"
+                @click="dial('p')"
+              >
+                Pick up
+              </button>
+              <button
+                class="dial-button is-receiver is-hang-up"
+                @click="dial('h')"
+              >
+                Hang up
+              </button>
             </div>
             <div class="dial-row">
-              <button class="dial-button is-receiver is-reset" v-on:click="reset()">Rewind</button>
+              <button
+                class="dial-button is-receiver is-reset"
+                @click="reset()"
+              >
+                Rewind
+              </button>
             </div>
           </article>
         </main>
@@ -137,11 +210,17 @@ export default {
           <article class="set-phonebook">
             <label class="set-phonebook-upload">
               Set phonebook
-              <input type="file" v-on:change="load">
+              <input
+                type="file"
+                @change="load"
+              >
             </label>
-            <div class="set-phonebook-error" v-if="uploadError">
+            <div
+              v-if="uploadError"
+              class="set-phonebook-error"
+            >
               <div class="set-phonebook-error-msg">
-                {{uploadError}}
+                {{ uploadError }}
               </div>
             </div>
           </article>
@@ -255,7 +334,7 @@ p {
 }
 
 .dial-button.is-pick-up:active {
-  background-color: #177717; 
+  background-color: #177717;
 }
 
 .dial-button.is-hang-up {

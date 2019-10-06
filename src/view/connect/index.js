@@ -23,11 +23,11 @@ const protocol = 'fernspielctl'
 /**
  * Connect to fernspielapparat server running at the websockets url
  * provided with the options object.
- * 
+ *
  * @param {ConnectOpts} opts sets url to connect to and optional callbacks
  * @returns {Promise<Connection>} promise for a connections object after successful connection
  */
-export default function connect(opts) {
+export default function connect (opts) {
   if (!opts || !opts.url) {
     throw new Error(
       `Expected parameters object containing at least an url, but got ${JSON.stringify(opts)}`
@@ -94,6 +94,6 @@ export default function connect(opts) {
           connection.onStart({ connection, id })
         }
       }
-    }    
+    }
   })
 }
