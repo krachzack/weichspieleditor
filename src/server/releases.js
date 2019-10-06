@@ -11,7 +11,10 @@ const releaseApiUrl = `/repos/${repo}/releases`
 const platformIndicatorsInTar = {
   darwin: /.*LDarwin.*\.tar\.gz/i,
   win32: /.*msys.*\.tar\.gz/i,
-  linux: /.*linux.*\.tar\.gz/i
+  // this matches fernspielapparat-0.2.0-linux-x86_64.tar.gz
+  // but not fernspielapparat-0.2.0-arm-unknown-linux-gnueabihf.tar.gz
+  // this does not work on RPi, where the other is needed.
+  linux: /\.[0-9]+-linux-.*\.tar\.gz/i
 }
 
 /**
