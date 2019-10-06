@@ -96,10 +96,12 @@ export function download ({ url, hostname, path, headers }, toFile) {
             file.close()
           })
           file.on('error', err => {
-            reject(new Error(err))
+            reject(new Error(`File write error: ${err.message}`))
           })
           res.on('end', () => {
-            file.close()
+            file.close() // wait till file is closed and then resolve
+          })
+          file.on('close', () => {
             resolve(toFile)
           })
         } else {
