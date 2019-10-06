@@ -86,7 +86,7 @@ function getBinary () {
  * @returns {Promise<Runtime} promise for running child process with a specified ws URL
  */
 function launchServer (pathToBinary) {
-  if (!pathToBinary || pathToBinary == 'fernspielapparat' || pathToBinary === 'fernspielapparat.exe') {
+  if (!pathToBinary || pathToBinary === 'fernspielapparat' || pathToBinary === 'fernspielapparat.exe') {
     pathToBinary = executableName
   }
 
@@ -115,6 +115,8 @@ function launchServer (pathToBinary) {
     server.on('exit', (code) => {
       if (code) {
         console.log(`server exited with code ${code}`)
+      } else {
+        console.log('server exited')
       }
 
       if (starting) {
@@ -191,7 +193,7 @@ function fernspielapparatVersionOnPath () {
 function fernspielapparatPathInUserDir () {
   const binaryPath = userBinaryPath()
   // must be able to update (write), and execute (read + execute)
-  const perms = (os.platform() == 'win32') ? (fs.constants.R_OK) : (fs.constants.R_OK | fs.constants.X_OK)
+  const perms = (os.platform() === 'win32') ? (fs.constants.R_OK) : (fs.constants.R_OK | fs.constants.X_OK)
 
   return new Promise((resolve, reject) => {
     fs.access(binaryPath, perms, (err) => {
@@ -285,31 +287,57 @@ function getUserDir () {
 }
 
 function envForPlatform () {
-  const env = Object.assign(
-    {},
-    process.env
-  )
+  const env = {
+    ...process.env
+  }
 
+  const vlcRegex = /vlc/i
   const platform = os.platform()
-  if (platform === 'darwin' && !env.DYLD_LIBRARY_PATH && !env.VLC_PLUGIN_DIR) {
+  if (platform === 'darwin') {
     // Set DYLD_PATH and vlc plugin dir if not set by user
-    const vlcPath = '/Applications/VLC.app/Contents/MacOS/lib'
-    if (!env.DYLD_LIBRARY_PATH) {
-      env.DYLD_LIBRARY_PATH = vlcPath
-    } else {
-      env.DYLD_LIBRARY_PATH = `${env.DYLD_LIBRARY_PATH}${delimiter}${vlcPath}`
+    if (!vlcRegex.exec(env.DYLD_LIBRARY_PATH)) {
+      const prefix = env.DYLD_LIBRARY_PATH
+        ? `${env.DYLD_LIBRARY_PATH}${delimiter}`
+        : ''
+      env.DYLD_LIBRARY_PATH = `${prefix}${vlcLibDir()}`
+    }
+    // And plugin dir
+    if (!env.VLC_PLUGIN_PATH) {
+      env.VLC_PLUGIN_PATH = vlcPluginDir()
+    }
+  } else if (platform === 'win32') {
+    if (!vlcRegex.exec(env.Path)) {
+      // No VLC on the path, guess where it is and add it to the path
+      env.Path = `${env.Path}${delimiter}${vlcLibDir()}`
     }
 
     if (!env.VLC_PLUGIN_PATH) {
-      env.VLC_PLUGIN_PATH = '/Applications/VLC.app/Contents/MacOS/plugins'
-    }
-  } else if (platform === 'win32') {
-    if (!/VLC/.exec(env.Path)) {
-      // No VLC on the path, guess where it is and add it to the path
-      const typicalVlcDir = `${env.ProgramFiles}\\VideoLAN\\VLC`
-      env.Path = `${env.Path}${delimiter}${typicalVlcDir}`
+      env.VLC_PLUGIN_PATH = vlcPluginDir()
     }
   }
 
   return env
+}
+
+function vlcPluginDir () {
+  const platform = os.platform()
+  if (platform === 'darwin') {
+    return '/Applications/VLC.app/Contents/MacOS/plugins'
+  } else if (platform === 'win32') {
+    return `${process.env.ProgramFiles}\\VideoLAN\\VLC\\plugins`
+  } else {
+    return ''
+  }
+}
+
+function vlcLibDir () {
+  const platform = os.platform()
+  if (platform === 'darwin') {
+    // without the lib, the loader searches in that subdirectory automatically
+    return '/Applications/VLC.app/Contents/MacOS:/Applications/VLC.app/Contents/MacOS/lib'
+  } else if (platform === 'win32') {
+    return `${process.env.ProgramFiles}\\VideoLAN\\VLC`
+  } else {
+    return ''
+  }
 }
