@@ -20,11 +20,7 @@ const wsUrl = `ws://${defaultBind.host}:${defaultBind.port}`
 
 const userDir = getUserDir()
 
-/**
- * If the server runs this many milliseconds without crashing or
- * otherwise exiting, the startup is considered successful.
- */
-const startupSuccessfulThreshold = 1000
+const executableName = (os.platform() === 'win32') ? 'fernspielapparat.exe' : 'fernspielapparat'
 
 /**
  * Describes a fernspielapparat runtime running in a child process,
@@ -70,7 +66,7 @@ function getBinary () {
 
   function fernspielapparatOnPath (version) {
     console.log(`using system-provided fernspielapparat runtime, version ${version}`)
-    return 'fernspielapparat'
+    return executableName
   }
 }
 
@@ -78,8 +74,8 @@ function getBinary () {
  * Tries to start a child process running the fernspielapparat runtime
  * and resolves to a running child process instance.
  *
- * If no path is specified or if the path is `"fernspielapparat"`, then
- * the runtime on the path is used.
+ * If no path is specified or if the path is `"fernspielapparat"` or `"fernspielapparat.exe"`,
+ * then the runtime on the path is used.
  *
  * If an absolute path to a runtime executable is specified this one is
  * used.
@@ -90,8 +86,8 @@ function getBinary () {
  * @returns {Promise<Runtime} promise for running child process with a specified ws URL
  */
 function launchServer (pathToBinary) {
-  if (!pathToBinary) {
-    pathToBinary = 'fernspielapparat'
+  if (!pathToBinary || pathToBinary == 'fernspielapparat' || pathToBinary === 'fernspielapparat.exe') {
+    pathToBinary = executableName
   }
 
   return new Promise((resolve, reject) => {
@@ -109,6 +105,9 @@ function launchServer (pathToBinary) {
       }
     )
 
+    server.stdout.on('data', (data) => {
+      console.log(data.toString())
+    })
     server.stderr.on('data', (data) => {
       console.error(data.toString())
     })
@@ -192,7 +191,7 @@ function fernspielapparatVersionOnPath () {
 function fernspielapparatPathInUserDir () {
   const binaryPath = userBinaryPath()
   // must be able to update (write), and execute (read + execute)
-  const perms = fs.constants.W_OK | fs.constants.R_OK | fs.constants.X_OK
+  const perms = (os.platform() == 'win32') ? (fs.constants.R_OK) : (fs.constants.R_OK | fs.constants.X_OK)
 
   return new Promise((resolve, reject) => {
     fs.access(binaryPath, perms, (err) => {
@@ -216,7 +215,7 @@ function fernspielapparatPathInUserDir () {
 function userBinaryPath () {
   // FIXME this kinda sounds like a huge security hole - an attacker could manipulate the directory
   //       maybe downloading it every time into an unnamed file would be better?
-  return `${userDir}/fernspielapparat`
+  return `${userDir}/${executableName}`
 }
 
 /**
@@ -305,7 +304,11 @@ function envForPlatform () {
       env.VLC_PLUGIN_PATH = '/Applications/VLC.app/Contents/MacOS/plugins'
     }
   } else if (platform === 'win32') {
-    // TODO set Path to include VLC
+    if (!/VLC/.exec(env.Path)) {
+      // No VLC on the path, guess where it is and add it to the path
+      const typicalVlcDir = `${env.ProgramFiles}\\VideoLAN\\VLC`
+      env.Path = `${env.Path}${delimiter}${typicalVlcDir}`
+    }
   }
 
   return env

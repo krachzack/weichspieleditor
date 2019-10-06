@@ -40,12 +40,12 @@ built-in speech synthesis from Windows, but it will sound different than
 `espeak`.
 
 #### Caveat: `Path` on Windows
-On Windows, make sure VLC is on your `Path` environment variable, so the
-runtime can find it. If you get an error message complaining that `libvlc.dll`
-can not be found, you probably need to adjust your path.
-
-If you have installed `espeak` it also needs to be available on your `Path`
-for `weichspielapparat` to actually use it.
+On Windows, make sure `espeak` is on your `Path` environment variable if you
+want to use it, otherwise the runtime can not find it. For VLC, the
+weichspielapparat will automatically search for it in a typcial installation
+directory. If you have a weird Setup you might get errors that `libvlc.dll`
+is missing. To fix it, you have to find `libvlc.dll` and make sure it is on
+the `Path`.
 
 #### Caveat: `espeak` on Linux
 On Linux, installing `espeak` is absolutely required for `weichspielapparat`
