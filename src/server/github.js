@@ -1,7 +1,7 @@
 import { getJson, download } from './http.js'
 import os from 'os'
 import fs from 'fs'
-import randomBetween from './rand.js'
+import { randomBetween } from './rand.js'
 
 const hostname = 'api.github.com'
 const acceptJson = 'application/vnd.github.v3+json'
