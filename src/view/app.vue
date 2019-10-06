@@ -50,12 +50,13 @@ export default {
   },
   methods: {
     dial (symbols) {
-      this.connection.dial(symbols)
+      if (this.connection) {
+        this.connection.dial(symbols)
+      }
     },
     load (evt) {
       const { files } = evt.target
-
-      if (files.length >= 1) {
+      if (files.length >= 1 && this.connection) {
         const file = files[0]
         console.log('Loading', file)
 
@@ -68,6 +69,11 @@ export default {
               5000 // hide error again after five seconds
             )
           })
+      }
+    },
+    reset () {
+      if (this.connection) {
+        this.connection.reset()
       }
     }
   }
@@ -121,6 +127,9 @@ export default {
             <div class="dial-row">
               <button class="dial-button is-receiver is-pick-up" v-on:click="dial('p')">Pick up</button>
               <button class="dial-button is-receiver is-hang-up" v-on:click="dial('h')">Hang up</button>
+            </div>
+            <div class="dial-row">
+              <button class="dial-button is-receiver is-reset" v-on:click="reset()">Rewind</button>
             </div>
           </article>
         </main>

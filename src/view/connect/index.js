@@ -57,6 +57,11 @@ export default function connect(opts) {
           invoke: 'run',
           with: phonebook
         }))
+      },
+      reset () {
+        socket.send(JSON.stringify({
+          invoke: 'reset'
+        }))
       }
     }
     Object.freeze(connection)
