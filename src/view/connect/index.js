@@ -20,6 +20,8 @@ const protocol = 'fernspielctl'
  * @property {function} dial - dials a given string of symbols like `"1 h 123"`
  */
 
+let connection
+
 /**
  * Connect to fernspielapparat server running at the websockets url
  * provided with the options object.
@@ -36,8 +38,13 @@ export default function connect (opts) {
 
   return new Promise((resolve, reject) => {
     const url = opts.url
+
+    if (connection) {
+      connection.close()
+    }
+
     let socket = new window.WebSocket(url, protocol)
-    const connection = {
+    connection = {
       url,
       onTransition: opts.onTransition || (() => {}),
       onStart: opts.onStart || (() => {}),
@@ -77,6 +84,7 @@ export default function connect (opts) {
       connection.onClose(connection)
     }
     socket.onmessage = ({ data }) => {
+      // FIXME reloads, disconnect old connectiosn when making new one
       handleMessage(
         YAML.parse(data)
       )
