@@ -11,6 +11,7 @@ export default new Promise((resolve, reject) => {
     'fernspielapparatError',
     (_evt, err) => {
       const msg = err.message || err
+      console.error(err)
       reject(new Error(`Server startup failed: ${msg}`))
     }
   )

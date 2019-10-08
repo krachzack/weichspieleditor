@@ -31,7 +31,7 @@ function createWindow () {
       },
       err => {
         console.error('runtime startup failure', err)
-        mainWindow.webContents.send('fernspielapparatError', err)
+        mainWindow.webContents.send('fernspielapparatError', err.message)
       }
     )
   })
