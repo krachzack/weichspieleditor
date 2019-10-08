@@ -97,17 +97,8 @@ function launchServer (pathToBinary) {
     ]
     const env = envForPlatform()
     const opts = { env }
-
-    if (pathToBinary && pathToBinary !== 'fernspielapparat' && pathToBinary !== 'fernspielapparat.exe') {
-      // change working directory to where the executable is,
-      // and leave it unchanged if version on path is used
-      // changing wd works around incompatibility with spaces on windows
-      // See: https://github.com/nodejs/node-v0.x-archive/issues/25895
-      opts.cwd = dirname(pathToBinary)
-    }
-
     const server = spawn(
-      executableName,
+      pathToBinary,
       args,
       opts
     )
