@@ -96,7 +96,7 @@ function launchServer (pathToBinary) {
       '-s' // start in server mode
     ]
     const env = envForPlatform()
-    const opts = { ...env }
+    const opts = { env }
 
     if (pathToBinary && pathToBinary !== 'fernspielapparat' && pathToBinary !== 'fernspielapparat.exe') {
       // change working directory to where the executable is,
