@@ -4,7 +4,10 @@ import { spawn } from 'child_process'
 import { releaseTarballUrl } from './releases.js'
 import { downloadTarball } from './github.js'
 import os from 'os'
-import { delimiter } from 'path'
+import {
+  delimiter,
+  dirname
+} from 'path'
 import { decompress } from 'targz'
 import waitPort from 'wait-port'
 
@@ -86,23 +89,27 @@ function getBinary () {
  * @returns {Promise<Runtime} promise for running child process with a specified ws URL
  */
 function launchServer (pathToBinary) {
-  if (!pathToBinary || pathToBinary === 'fernspielapparat' || pathToBinary === 'fernspielapparat.exe') {
-    pathToBinary = executableName
-  }
-
   return new Promise((resolve, reject) => {
     let starting = true
+    const args = [
+      '-vvvv', // print debug and info logs on stderr, not only warnings and errors
+      '-s' // start in server mode
+    ]
     const env = envForPlatform()
+    const opts = { ...env }
+
+    if (pathToBinary && pathToBinary !== 'fernspielapparat' && pathToBinary !== 'fernspielapparat.exe') {
+      // change working directory to where the executable is,
+      // and leave it unchanged if version on path is used
+      // changing wd works around incompatibility with spaces on windows
+      // See: https://github.com/nodejs/node-v0.x-archive/issues/25895
+      opts.cwd = dirname(pathToBinary)
+    }
 
     const server = spawn(
-      pathToBinary,
-      [
-        '-vv', // print debug and info logs on stderr, not only warnings and errors
-        '-s' // start in server mode
-      ],
-      {
-        env
-      }
+      executableName,
+      args,
+      opts
     )
 
     server.stdout.on('data', (data) => {
@@ -154,7 +161,7 @@ function launchServer (pathToBinary) {
 function fernspielapparatVersionOnPath () {
   return new Promise((resolve, reject) => {
     const server = spawn(
-      'fernspielapparat',
+      executableName,
       [
         '--version' // only print version and then exit
       ],
