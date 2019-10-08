@@ -116,18 +116,21 @@ export default {
           <article class="dial">
             <div class="dial-row">
               <button
+                accesskey="1"
                 class="dial-button is-numeric"
                 @click="dial('1')"
               >
                 1
               </button>
               <button
+                accesskey="2"
                 class="dial-button is-numeric"
                 @click="dial('2')"
               >
                 2
               </button>
               <button
+                accesskey="3"
                 class="dial-button is-numeric"
                 @click="dial('3')"
               >
@@ -136,18 +139,21 @@ export default {
             </div>
             <div class="dial-row">
               <button
+                accesskey="4"
                 class="dial-button is-numeric"
                 @click="dial('4')"
               >
                 4
               </button>
               <button
+                accesskey="5"
                 class="dial-button is-numeric"
                 @click="dial('5')"
               >
                 5
               </button>
               <button
+                accesskey="6"
                 class="dial-button is-numeric"
                 @click="dial('6')"
               >
@@ -156,18 +162,21 @@ export default {
             </div>
             <div class="dial-row">
               <button
+                accesskey="7"
                 class="dial-button is-numeric"
                 @click="dial('7')"
               >
                 7
               </button>
               <button
+                accesskey="8"
                 class="dial-button is-numeric"
                 @click="dial('8')"
               >
                 8
               </button>
               <button
+                accesskey="9"
                 class="dial-button is-numeric"
                 @click="dial('9')"
               >
@@ -176,6 +185,7 @@ export default {
             </div>
             <div class="dial-row">
               <button
+                accesskey="0"
                 class="dial-button is-numeric"
                 @click="dial('0')"
               >
@@ -184,12 +194,14 @@ export default {
             </div>
             <div class="dial-row">
               <button
+                accesskey="p"
                 class="dial-button is-receiver is-pick-up"
                 @click="dial('p')"
               >
                 Pick up
               </button>
               <button
+                accesskey="h"
                 class="dial-button is-receiver is-hang-up"
                 @click="dial('h')"
               >
@@ -198,6 +210,7 @@ export default {
             </div>
             <div class="dial-row">
               <button
+                accesskey="r"
                 class="dial-button is-receiver is-reset"
                 @click="reset()"
               >
