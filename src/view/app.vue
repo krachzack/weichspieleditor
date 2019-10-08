@@ -86,25 +86,25 @@ export default {
   <section class="main-content-outer-wrapper">
     <transition name="fade-out">
       <div
-        v-if="phase != 'connected'"
+        v-if="phase !== 'connected'"
         class="overlay-load"
       >
-        <header v-if="phase == 'waiting'">
+        <header v-if="phase === 'waiting'">
           <p>weichspielapparat is getting ready...</p>
           <p>Some Software needs to be downloaded on the first run.</p>
           <p>Hang on tight, this will not take long.</p>
         </header>
-        <header v-if="phase == 'connecting'">
+        <header v-if="phase === 'connecting'">
           <p>Almost done, connecting to {{ url }}.</p>
         </header>
-        <header v-if="phase == 'failure'">
+        <header v-if="phase === 'failure'">
           <p>Fatal error when trying to connect to server: {{ connectError }}.</p>
         </header>
       </div>
     </transition>
     <transition name="fade-out">
       <div
-        v-if="phase == 'connected'"
+        v-if="phase === 'connected'"
         class="main-content-wrapper"
       >
         <header class="header-bar">
