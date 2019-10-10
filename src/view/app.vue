@@ -109,8 +109,7 @@ export default {
       >
         <header v-if="phase === 'waiting'">
           <p>weichspielapparat is getting ready...</p>
-          <p>Some Software needs to be downloaded on the first run.</p>
-          <p>Hang on tight, this will not take long.</p>
+          <p v-if="startupProgress">{{startupProgress.task}}</p>
         </header>
         <header v-if="phase === 'connecting'">
           <p>Almost done, connecting to {{ url }}.</p>

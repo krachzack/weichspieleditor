@@ -44,7 +44,7 @@ export function reportExtractingTarball (progress) {
 export function reportDownload(progress, doneRatio) {
   if (progress) {
     progress({
-      task: `Downloading fernspielapparat.`,
+      task: `Downloading fernspielapparat from GitHub.`,
       progress: doneRatio
     })
   }
