@@ -265,6 +265,16 @@ export default {
 </template>
 
 <style scoped>
+@font-face {
+  font-family: "Fira Sans";
+  font-weight: 400;
+  src: url("../fonts/FiraSans-Regular.ttf");
+}
+
+.main-content-outer-wrapper {
+  font-family: "Fira Sans", sans-serif;
+}
+
 .progress-indicator {
   position: absolute;
   left: 0;
@@ -329,13 +339,11 @@ export default {
   flex-grow: 1;
   padding: 1em 2em;
   color: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .main-content {
   flex-grow: 1000;
   background-color: white;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 .bottom-controls {
@@ -343,7 +351,6 @@ export default {
   flex-basis: 4em;
   background-color: #CCC;
   color: #333;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   position: relative;
 }
 

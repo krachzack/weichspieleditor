@@ -11,6 +11,13 @@ rules.push({
   use: [{ loader: 'vue-loader' }]
 })
 
+rules.push({
+  test: /\.(ttf|otf|eot|woff|woff2)$/,
+  use: {
+    loader: 'file-loader'
+  }
+})
+
 module.exports = {
   // Put your normal webpack config below here
   module: {

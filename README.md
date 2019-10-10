@@ -91,6 +91,7 @@ possible because they rely on the excellent work of other open source projects.
 ### weichspielapparat
 * [Electron](https://electronjs.org/) - Used for playing sound
 * [node.js](https://nodejs.org/) - Used to build auto-updating and all the other code in here
+* [Fira Sans](https://fonts.google.com/specimen/Fira+Sans) - Free font used as the primary UI font
 
 ### fernspielapparat
 * [Rust](https://www.rust-lang.org/) - Used to build it and make it both safe and efficient
