@@ -19,6 +19,7 @@ function createWindow () {
     }
   })
 
+  mainWindow.setAutoHideMenuBar(true)
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
   mainWindow.webContents.once('did-finish-load', () => {
