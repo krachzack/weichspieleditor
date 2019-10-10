@@ -10,8 +10,8 @@ function createWindow () {
   let runtimeProcess
 
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 430,
+    height: 700,
     // same color as loading overlay, so we don't see white flashing at startup
     backgroundColor: '#444444',
     webPreferences: {
