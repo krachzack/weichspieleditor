@@ -23,7 +23,11 @@ function createWindow () {
 
   mainWindow.webContents.once('did-finish-load', () => {
     console.log('launching runtime...')
-    launchRuntime().then(
+    launchRuntime(
+      progress => {
+        console.log(progress)
+      }
+    ).then(
       ({ process, url }) => {
         runtimeProcess = process
         console.log(`runtime is up and running on 0.0.0.0:38397`)

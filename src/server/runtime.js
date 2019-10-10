@@ -5,11 +5,15 @@ import { releaseTarballUrl } from './releases.js'
 import { downloadTarball } from './github.js'
 import os from 'os'
 import {
-  delimiter,
-  dirname
+  delimiter
 } from 'path'
 import { decompress } from 'targz'
 import waitPort from 'wait-port'
+import {
+  reportGitHubQuery,
+  reportDownloadTarball,
+  reportExtractingTarball
+} from './progress.js'
 
 /**
  * Hostname for websockets URL. Not used for binding,
@@ -43,11 +47,16 @@ const executableName = (os.platform() === 'win32') ? 'fernspielapparat.exe' : 'f
  * Returns a promise for a runtime child process in server mode,
  * bound to `0.0.0.0:38397`, which is the default configuration.
  *
+ * @param {import('./progress.js').ProgressCallback} [progress] called when starting sub-task or making progress (optional)
  * @returns {Promise<Runtime>} promise for runtime process
  */
-export default function launchRuntime () {
+export default function launchRuntime (progress) {
   return getBinary()
-    .catch(downloadBinary)
+    .catch(() => {
+      // no runtime pre-installed or on PATH, download it
+      // this may take some time, so report on the progress
+      return downloadBinary(progress)
+    })
     .then(launchServer)
 }
 
@@ -222,11 +231,25 @@ function userBinaryPath () {
  * Downloads a fernspielapparat binary from GitHub and places it
  * in the user directory.
  *
+ * @param {import('./progress.js').ProgressCallback} [progress] called when starting sub-task or making progress
  * @returns {Promise<string>} a promise for the downloaded binary in the user dir
  */
-function downloadBinary () {
+function downloadBinary (progress) {
+  reportGitHubQuery(progress)
   return releaseTarballUrl()
-    .then(url => downloadTarball(url, `fernspielapparat.tar.gz`))
+    .then(url => {
+      reportDownloadTarball(progress)
+      return url
+    })
+    .then(url => downloadTarball(
+      url,
+      `fernspielapparat.tar.gz`,
+      progress
+    ))
+    .then(tarball => {
+      reportExtractingTarball(progress)
+      return tarball
+    })
     .then(extractExecutableToUserDir)
 }
 

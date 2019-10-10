@@ -43,9 +43,19 @@ export function getGithubJson (path) {
   }
 }
 
-export function downloadTarball (url, filename) {
+/**
+ * Downloads a tarball or other asset from a given absolute GitHub URL
+ * and saves it to a temporary directory using the given filename.
+ * 
+ * The `Accept` header is specified as `application/octet-stream`.
+ * 
+ * @param {string} url Absolute GitHub URL
+ * @param {string} filename A filename to use inside a temporary directory for the downloaded file
+ * @param {import('./progress.js').ProgressCallback} [progress] - called when making progress
+ */
+export function downloadTarball (url, filename, progress) {
   return createDownloadDirectory()
-    .then(dir => download({ url, headers: headersTarGz }, `${dir}/${filename}`))
+    .then(dir => download({ url, headers: headersTarGz }, `${dir}/${filename}`, progress))
 }
 
 function createDownloadDirectory () {

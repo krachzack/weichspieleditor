@@ -1,5 +1,7 @@
 import https from 'https'
 import fs from 'fs'
+import { basename } from 'path'
+import { reportDownload } from './progress.js'
 
 export function getJson ({ hostname, path, headers }) {
   if (!headers) {
@@ -57,7 +59,17 @@ function getUtf8 ({ hostname, path, headers }) {
   })
 }
 
-export function download ({ url, hostname, path, headers }, toFile) {
+/**
+ * Download a URL or hostname/path combination to a file.
+ * 
+ * The `Accept` header is specified as `application/octet-stream`.
+ * 
+ * @param {*} opts url and optional headers 
+ * @param {string} toFile path to download to
+ * @param {import('./progress.js').ProgressCallback} [progress] called when starting sub-task or making progress (optional)
+ * @returns {Promise<String>} promise that resolves to the target path when completed
+ */
+export function download ({ url, hostname, path, headers }, toFile, progress) {
   return new Promise((resolve, reject) => {
     if (url) {
       const parsed = new URL(url)
@@ -85,25 +97,52 @@ export function download ({ url, hostname, path, headers }, toFile) {
                 url: res.headers.location || res.headers.Location,
                 headers
               },
-              toFile
+              toFile,
+              progress
             )
           )
         } else if (res.statusCode >= 200 && res.statusCode < 300) {
           // success
+          const length = Math.max(1, res.headers['content-length']|0) // prevent division by zero
           const file = fs.createWriteStream(toFile)
           res.pipe(file)
+
+          const filename = basename(new URL(`https://${hostname}${path}`).pathname)
+          console.log(`URL: ${url}`)
+          console.log(`downloading ${filename} with size ${length / 1024 / 1024}MiB ...`)
+          
+          let update = setInterval(
+            () => {
+              const doneRatio = Math.max(0, Math.min(1, res.socket.bytesRead / length))
+              reportDownload(progress, doneRatio)
+            },
+            150
+          )
+
           file.on('finish', () => {
             file.close()
+            stopProgress()
           })
           file.on('error', err => {
             reject(new Error(`File write error: ${err.message}`))
+            clearInterval(update)
+            stopProgress()
           })
           res.on('end', () => {
             file.close() // wait till file is closed and then resolve
+            stopProgress()
           })
           file.on('close', () => {
             resolve(toFile)
+            stopProgress()
           })
+
+          function stopProgress () {
+            if (update) {
+              clearInterval(update)
+              update = null
+            }
+          }
         } else {
           reject(new Error(`HTTP request failed, status: ${res.statusCode}`))
         }
