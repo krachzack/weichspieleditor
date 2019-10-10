@@ -2,6 +2,7 @@
 import connect from './connect'
 import serverStartup from '../server/startup.js'
 import { load } from './phonebook.js'
+import { ipcRenderer } from 'electron'
 
 export default {
   data () {
@@ -9,7 +10,8 @@ export default {
       url: '',
       connection: null,
       connectError: null,
-      uploadError: ''
+      uploadError: '',
+      startupProgress: null
     }
   },
   computed: {
@@ -25,6 +27,15 @@ export default {
         return 'connecting'
       } else {
         throw new Error('inconsistent state')
+      }
+    },
+    progressStyle () {
+      const ratio = this.startupProgress
+        ? this.startupProgress.progress
+        : 0
+
+      return {
+        width: `${ratio * 100}%`
       }
     }
   },
@@ -45,6 +56,13 @@ export default {
         let connection = this.url ? `Connection to ${this.url}` : 'Connection'
         this.connectError = `${connection} could not be established. Error: ${err.message}`
         console.error(err)
+      }
+    )
+
+    ipcRenderer.on(
+      'fernspielapparatProgress',
+      (_evt, progress) => {
+        this.startupProgress = progress
       }
     )
   },
@@ -100,6 +118,9 @@ export default {
         <header v-if="phase === 'failure'">
           <p>Fatal error when trying to connect to server: {{ connectError }}.</p>
         </header>
+
+        <div class="progress-indicator is-top" v-bind:style="progressStyle"></div>
+        <div class="progress-indicator is-bottom" v-bind:style="progressStyle"></div>
       </div>
     </transition>
     <transition name="fade-out">
@@ -244,6 +265,21 @@ export default {
 </template>
 
 <style scoped>
+.progress-indicator {
+  position: absolute;
+  left: 0;
+  height: 0.5em;
+  background-color: white;
+}
+
+.progress-indicator.is-top {
+  top: 0;
+}
+
+.progress-indicator.is-bottom {
+  bottom: 0;
+}
+
 .main-content-outer-wrapper {
   position: fixed;
   top: 0;

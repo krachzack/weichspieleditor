@@ -25,17 +25,23 @@ function createWindow () {
     console.log('launching runtime...')
     launchRuntime(
       progress => {
-        console.log(progress)
+        if (mainWindow) {
+          mainWindow.webContents.send('fernspielapparatProgress', progress)
+        }
       }
     ).then(
       ({ process, url }) => {
         runtimeProcess = process
         console.log(`runtime is up and running on 0.0.0.0:38397`)
-        mainWindow.webContents.send('fernspielapparatReady', url)
+        if (mainWindow) {
+          mainWindow.webContents.send('fernspielapparatReady', url)
+        }
       },
       err => {
         console.error('runtime startup failure', err)
-        mainWindow.webContents.send('fernspielapparatError', err.message)
+        if (mainWindow) {
+          mainWindow.webContents.send('fernspielapparatError', err.message)
+        }
       }
     )
   })
