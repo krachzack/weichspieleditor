@@ -1,5 +1,6 @@
 import os from 'os'
 import { spawn } from 'child_process'
+import which from 'which'
 
 const platform = os.platform()
 const binary = (platform === 'win32') ? 'espeak.exe' : 'espeak'
@@ -15,9 +16,10 @@ const espeakOptional = platform === 'win32' || platform === 'darwin'
  * @returns {Promise<import('./index').Dependency>} promise for espeak dependency
  */
 export function locateEspeak () {
-  return espeakVersionOnPath()
+  return which(binary)
+    .then(espeakVersion)
     .then(
-      ({ version, directory }) => {
+      ({ binary, version, directory }) => {
         return {
           version,
           directory,
@@ -40,7 +42,7 @@ export function locateEspeak () {
 /**
  * @returns {Promise<Object>} `version` and data `directory` of espeak found on path
  */
-function espeakVersionOnPath () {
+function espeakVersion (binary) {
   return new Promise((resolve, reject) => {
     let output = ''
     const espeak = spawn(

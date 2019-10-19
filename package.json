@@ -25,7 +25,8 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "targz": "^1.0.1",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "which": "^2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

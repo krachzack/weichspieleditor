@@ -10,6 +10,7 @@ import {
   reportDownloadTarball,
   reportExtractingTarball
 } from '../progress.js'
+import which from 'which'
 
 const executableName = (os.platform() === 'win32') ? 'fernspielapparat.exe' : 'fernspielapparat'
 const userDir = getUserDir()
@@ -25,7 +26,9 @@ const userDir = getUserDir()
  * @returns {Promise<import('./index').Dependency>} promise for a fernspielapparat runtime
  */
 export function locateFernspielapparat (vlcDep, progress) {
-  return version(executableName) // try on path
+  return which(executableName)
+    // try on path first
+    .then(version)
     // then try if a previous invocation downloaded to user dir and use that
     .catch(() => fernspielapparatPathInUserDir().then(version))
     // no runtime pre-installed or on PATH, download it
@@ -78,7 +81,8 @@ function detectVersion (vlcDep, executablePathOrName) {
       output += data
     })
     fernspielapparat.on('error', (err) => {
-      reject(new Error(`No fernspielapparat on path, error: ${err.message}`))
+      console.log(`fernspielapparat launch error: ${err.message}`)
+      reject(new Error(`fernspielapparat launch error: ${err.message}`))
     })
     fernspielapparat.on('exit', (code) => {
       if (code) {
