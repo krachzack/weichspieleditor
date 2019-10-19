@@ -1,6 +1,6 @@
 # weichspielapparat
-A graphical user interface for the `fernspielapparat` runtime in early
-development.
+A graphical user interface for the `fernspielapparat` [runtime](https://github.com/krachzack/fernspielapparat)
+in early development.
 
 You can use it to play text-based games packaged in phonebooks.
 You can make your own phonebooks with the
@@ -61,12 +61,12 @@ binaries are and find a good guide for your platform on how to make a
 binary available on your path environment variable.
 
 ### Installing
-There are no binary releases yet, so if you want to run `weichspielapparat`
-you need to check out this repository, cd into it, install node and yarn,
-and then run it with `yarn start`.
+The easiest way to install is to download a binary release for your platform
+from [GitHub](https://github.com/krachzack/weichspielapparat/releases).
 
-Eventually, you will be able to download a binary release for your platform
-without having to build yourself.
+If you want to build `weichspielapparat` yourself, you need to check out
+this repository, cd into it, install node and yarn, and then run it with
+`yarn start`.
 
 ## Customizing `weichspielapparat`
 This sections outlines how to make your own changes to how `weichspielapparat`
