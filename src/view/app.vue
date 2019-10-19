@@ -16,11 +16,11 @@ export default {
   },
   computed: {
     phase () {
-      if (this.url === '') {
+      if (this.connectError) {
+        return 'failure'
+      } else if (this.url === '') {
         // waiting for server startup
         return 'waiting'
-      } else if (this.connectError) {
-        return 'failure'
       } else if (this.connection !== null) {
         return 'connected'
       } else if (this.connection === null) {
@@ -53,8 +53,7 @@ export default {
         this.connection = connection
       },
       err => {
-        let connection = this.url ? `Connection to ${this.url}` : 'Connection'
-        this.connectError = `${connection} could not be established. Error: ${err.message}`
+        this.connectError = `${err.message}`
         console.error(err)
       }
     )
@@ -62,7 +61,9 @@ export default {
     ipcRenderer.on(
       'fernspielapparatProgress',
       (_evt, progress) => {
-        this.startupProgress = progress
+        if (!this.connectError) {
+          this.startupProgress = progress
+        }
       }
     )
   },
@@ -109,17 +110,25 @@ export default {
       >
         <header v-if="phase === 'waiting'">
           <p>weichspielapparat is getting ready...</p>
-          <p v-if="startupProgress">{{startupProgress.task}}</p>
+          <p v-if="startupProgress">
+            {{ startupProgress.task }}
+          </p>
         </header>
         <header v-if="phase === 'connecting'">
           <p>Almost done, connecting to {{ url }}.</p>
         </header>
         <header v-if="phase === 'failure'">
-          <p>Fatal error when trying to connect to server: {{ connectError }}.</p>
+          <p>Fatal error when trying to connect to server: <span v-html="connectError"></span></p>
         </header>
 
-        <div class="progress-indicator is-top" v-bind:style="progressStyle"></div>
-        <div class="progress-indicator is-bottom" v-bind:style="progressStyle"></div>
+        <div
+          class="progress-indicator is-top"
+          :style="progressStyle"
+        ></div>
+        <div
+          class="progress-indicator is-bottom"
+          :style="progressStyle"
+        ></div>
       </div>
     </transition>
     <transition name="fade-out">
@@ -324,6 +333,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  max-width: 100%;
 }
 
 .fade-out-enter-active, .fade-out-leave-active {

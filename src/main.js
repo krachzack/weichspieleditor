@@ -8,6 +8,7 @@ function createWindow () {
    * @type {import('child_process').ChildProcess} child process set when window contents first loaded
    */
   let runtimeProcess
+  let runtimeStartupComplete = false
 
   mainWindow = new BrowserWindow({
     width: 430,
@@ -26,12 +27,13 @@ function createWindow () {
     console.log('launching runtime...')
     launchRuntime(
       progress => {
-        if (mainWindow) {
+        if (mainWindow && !runtimeStartupComplete) {
           mainWindow.webContents.send('fernspielapparatProgress', progress)
         }
       }
     ).then(
       ({ process, url }) => {
+        runtimeStartupComplete = true
         runtimeProcess = process
         console.log(`runtime is up and running on 0.0.0.0:38397`)
         if (mainWindow) {
@@ -39,6 +41,7 @@ function createWindow () {
         }
       },
       err => {
+        runtimeStartupComplete = true
         console.error('runtime startup failure', err)
         if (mainWindow) {
           mainWindow.webContents.send('fernspielapparatError', err.message)
