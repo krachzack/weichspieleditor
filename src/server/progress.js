@@ -6,10 +6,10 @@ import { basename } from 'path'
  * @property {number} progress - A number in range [0,1], indicating how close the task is to finishing
  */
 
- /**
+/**
   * Called when a new sub-task of launching the runtime starts or
   * when progress is made on a long-running task.
-  * 
+  *
   * @callback ProgressCallback
   * @param {Progress} progress - task description and progress
   */
@@ -41,7 +41,7 @@ export function reportExtractingTarball (progress) {
   }
 }
 
-export function reportDownload(progress, doneRatio) {
+export function reportDownload (progress, doneRatio) {
   if (progress) {
     progress({
       task: `Downloading fernspielapparat from GitHub.`,

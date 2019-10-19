@@ -61,10 +61,10 @@ function getUtf8 ({ hostname, path, headers }) {
 
 /**
  * Download a URL or hostname/path combination to a file.
- * 
+ *
  * The `Accept` header is specified as `application/octet-stream`.
- * 
- * @param {*} opts url and optional headers 
+ *
+ * @param {*} opts url and optional headers
  * @param {string} toFile path to download to
  * @param {import('./progress.js').ProgressCallback} [progress] called when starting sub-task or making progress (optional)
  * @returns {Promise<String>} promise that resolves to the target path when completed
@@ -103,14 +103,14 @@ export function download ({ url, hostname, path, headers }, toFile, progress) {
           )
         } else if (res.statusCode >= 200 && res.statusCode < 300) {
           // success
-          const length = Math.max(1, res.headers['content-length']|0) // prevent division by zero
+          const length = Math.max(1, res.headers['content-length'] | 0) // prevent division by zero
           const file = fs.createWriteStream(toFile)
           res.pipe(file)
 
           const filename = basename(new URL(`https://${hostname}${path}`).pathname)
           console.log(`URL: ${url}`)
           console.log(`downloading ${filename} with size ${length / 1024 / 1024}MiB ...`)
-          
+
           let update = setInterval(
             () => {
               const doneRatio = Math.max(0, Math.min(1, res.socket.bytesRead / length))

@@ -1,7 +1,7 @@
-import { getJson, download } from './http.js'
+import { getJson, download } from '../http.js'
 import os from 'os'
 import fs from 'fs'
-import { randomBetween } from './rand.js'
+import { randomBetween } from '../rand.js'
 
 const hostname = 'api.github.com'
 const acceptJson = 'application/vnd.github.v3+json'
@@ -46,12 +46,12 @@ export function getGithubJson (path) {
 /**
  * Downloads a tarball or other asset from a given absolute GitHub URL
  * and saves it to a temporary directory using the given filename.
- * 
+ *
  * The `Accept` header is specified as `application/octet-stream`.
- * 
+ *
  * @param {string} url Absolute GitHub URL
  * @param {string} filename A filename to use inside a temporary directory for the downloaded file
- * @param {import('./progress.js').ProgressCallback} [progress] - called when making progress
+ * @param {import('../progress.js').ProgressCallback} [progress] - called when making progress
  */
 export function downloadTarball (url, filename, progress) {
   return createDownloadDirectory()
