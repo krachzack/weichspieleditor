@@ -1,5 +1,6 @@
 import { join, delimiter } from 'path'
 import os from 'os'
+import fs from 'fs'
 import { spawn } from 'child_process'
 
 const platform = os.platform()
@@ -16,14 +17,21 @@ export function locateVlc () {
     vlcPluginDir(),
     vlcBinary()
   ])
-    .then(([directory, pluginDir, { binary, version }]) => {
-      return {
-        version,
-        directory: vlcBinaryDir(),
-        binary,
-        environment: environment(directory, pluginDir)
+    .then(
+      ([directory, pluginDir, { binary, version }]) => {
+        return {
+          version,
+          directory: vlcBinaryDir(),
+          binary,
+          environment: environment(directory, pluginDir)
+        }
+      },
+      error => {
+        const style = 'style="display:block; margin-top: 0.5em; color: white; border-radius: 1em; border: 0.2em solid white; padding: 0.4em 0.8em; text-decoration: none"'
+        const vlcDownloadButton = `<a ${style} href="https://www.videolan.org/vlc">Download VLC</a>`
+        throw new Error(`${error.message} ${vlcDownloadButton}`)
       }
-    })
+    )
 }
 
 function environment (vlcLibDir, vlcPluginDir) {
@@ -91,6 +99,21 @@ function vlcBinary (vlcDir) {
  * @returns {Promise<string>} version output like `"VLC media player 2.2.5.1 Umbrella (revision 2.2.5.1-0-gad4656a)"`
  */
 function vlcVersion (vlcBinary) {
+  if (platform === 'win32') {
+    // Starting with --version on windows starts up a console window and hangs forever
+    // instead, just check if the file is there
+    const perms = fs.constants.R_OK
+    return new Promise((resolve, reject) => {
+      fs.access(vlcBinary, perms, (err) => {
+        if (err) {
+          reject(new Error(`Cannot find VLC binary, error: ${err.message}`))
+        } else {
+          resolve(vlcBinary)
+        }
+      })
+    })
+  }
+
   return new Promise((resolve, reject) => {
     let output = ''
     const vlc = spawn(
@@ -111,8 +134,7 @@ function vlcVersion (vlcBinary) {
       }
     })
     vlc.on('error', (err) => {
-      const style = 'style="display:block; margin-top: 0.5em; color: white; border-radius: 1em; border: 0.2em solid white; padding: 0.4em 0.8em"'
-      reject(new Error(`vlc could not be started: ${err.message} - Consider downloading a recent 64-bit version of VLC and then restarting. <a ${style} href="https://www.videolan.org/vlc">Download VLC</a>`))
+      reject(new Error(`vlc could not be started: ${err.message} - Consider downloading a recent 64-bit version of VLC and then restarting.`))
     })
   })
 }
