@@ -39,7 +39,6 @@ export function locateDependencies (progress) {
             // espeak is optional on some platforms
             dependencies.espeak = espeak
           }
-          console.log(dependencies)
           return dependencies
         })
     })

@@ -16,8 +16,7 @@ const espeakOptional = platform === 'win32' || platform === 'darwin'
  * @returns {Promise<import('./index').Dependency>} promise for espeak dependency
  */
 export function locateEspeak () {
-  return which(binary)
-    .then(espeakVersion)
+  return espeakVersion(which.sync(binary, {nothrow: true}) || binary)
     .then(
       ({ binary, version, directory }) => {
         return {
