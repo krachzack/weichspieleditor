@@ -1,5 +1,3 @@
-import { basename } from 'path'
-
 /**
  * @typedef Progress
  * @property {string} task - Sentence-case description of what is being done.

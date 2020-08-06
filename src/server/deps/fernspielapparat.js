@@ -26,13 +26,13 @@ const userDir = getUserDir()
  * @returns {Promise<import('./index').Dependency>} promise for a fernspielapparat runtime
  */
 export function locateFernspielapparat (vlcDep, progress) {
-  const onPath = which.sync(executableName, {nothrow: true})
+  const onPath = which.sync(executableName, { nothrow: true })
   const preInstalled = onPath
     // First try if can be found on path
     ? version(onPath)
     // then try if a previous invocation downloaded to user dir and use that
     : fernspielapparatPathInUserDir().then(version)
-    
+
   return preInstalled
     // no runtime pre-installed or on PATH, download it
     // this may take some time, so report on the progress
