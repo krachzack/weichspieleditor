@@ -1,4 +1,6 @@
 # weichspielapparat
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkrachzack%2Fweichspielapparat.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkrachzack%2Fweichspielapparat?ref=badge_shield)
+
 A graphical user interface for the `fernspielapparat` [runtime](https://github.com/krachzack/fernspielapparat)
 in early development.
 
@@ -100,3 +102,6 @@ possible because they rely on the excellent work of other open source projects.
 
 ## License
 GPLv3, see [LICENSE](LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkrachzack%2Fweichspielapparat.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkrachzack%2Fweichspielapparat?ref=badge_large)
